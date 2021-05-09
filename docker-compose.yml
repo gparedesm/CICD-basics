@@ -1,0 +1,46 @@
+version: "3.8"
+services: 
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts-jdk11
+    volumes:
+      - jenkins:/var/jenkins_home
+    ports: 
+      - '8080:8080'
+  git:
+    container_name: git-server
+    image: 'gitlab/gitlab-ce:latest'
+    hostname: 'gitlab.example.com'
+    ports:
+      - '8090:80'
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+  remote-host:
+    container_name: remote-host
+    image: remote-host
+    build:
+      context: centos7
+    #volumes:
+      #- $PWD/aws-s3.sh:/tmp/script.sh
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube
+    volumes:
+      - sonar_conf:/opt/sonarqube/conf
+      - sonar_data:/opt/sonarqube/data
+      - sonar_logs:/opt/sonarqube/logs
+      - sonar_extensions:/opt/sonarqube/extensions
+    ports:
+      - '9000:9000'
+      - '9092:9092'
+volumes:
+  jenkins:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  sonar_conf:
+  sonar_data:
+  sonar_logs:
+  sonar_extensions:
